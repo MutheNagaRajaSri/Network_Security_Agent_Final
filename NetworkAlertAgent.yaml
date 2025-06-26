@@ -1,0 +1,69 @@
+Descriptor:
+  Name: NetworkAlertAgent
+  DisplayName: Network Flow Agent
+  Description: Handles alert analysis and response chaining multiple skills
+
+SkillGroups:
+  - Format: Agent
+    Skills:
+      - Name: NetworkAlertAgent
+        DisplayName: Network Flow Agent
+        Description: Handles alert analysis and response using multiple skills
+        Inputs:
+          - Name: alertId
+            Required: true
+          - Name: src_ip
+            Required: true
+          - Name: dest_ip
+            Required: true
+          - Name: src_port
+            Required: true
+          - Name: dest_port
+            Required: true
+          - Name: protocol
+            Required: true
+          - Name: bytes
+            Required: true
+          - Name: packets
+            Required: true
+          - Name: portUsage_src
+            Required: true
+          - Name: portUsage_dest
+            Required: true
+          - Name: history
+            Required: true
+          - Name: nsg_name
+            Required: true
+
+        Settings:
+          Instructions: |
+            Step 1: Run the skill `FalsePositiveDetector` to determine if the alert is a false positive.
+
+            Step 2: Run the skill `IPTrustClassifier.IPTrustClassifier` using the `src_ip` to classify the trust level of the source IP.
+
+            Step 3: Step 3: Run the skill `RuleRecommender` using all alert details, the false positive result, and the IP classification.
+            The skill should return a firewall rule recommendation in a structured format that includes the following fields:
+            - rule_name
+            - direction
+            - access
+            - protocol
+            - source
+            - destination
+            - port
+
+            Step 4: If a rule is recommended and the necessary fields are present, call the skill `FirewallRulePatcher.ApplyFirewallRule` using:
+            - `nsg_name` from the original agent input
+            - all other values from the structured recommendation output of `RuleRecommender`
+
+            Finally, consolidate and summarize the results:
+            - False positive analysis
+            - IP trust classification
+            - Firewall rule recommendation
+            - Whether a rule was applied using FirewallRulePatcher
+
+
+        ChildSkills:
+          - FalsePositiveDetector
+          - IPTrustClassifier.IPTrustClassifier
+          - RuleRecommender
+          - FirewallRulePatcher.ApplyFirewallRule
