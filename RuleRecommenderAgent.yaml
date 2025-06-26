@@ -1,0 +1,52 @@
+Descriptor:
+  Name: RuleRecommenderAgent
+  DisplayName: Rule Recommender Agent
+  Description: >
+    An autonomous network security AI agent that analyzes alert metadata, IP classification, and traffic patterns
+    to recommend firewall rule updates. Outputs rules compatible with the FirewallRulePatcher API skill.
+
+SkillGroups:
+  - Format: GPT
+    Skills:
+      - Name: RuleRecommender
+        DisplayName: Firewall Rule Recommender
+        Description: >
+          Suggests NSG rule updates based on security alerts, traffic behavior, and IP classification context.
+        Inputs:
+          - Name: contextData
+            Description: >
+              JSON-formatted context including alert ID, source/destination IPs, ports, protocol, IP classification,
+              behavioral metadata, and the target NSG name.
+        Settings:
+          ModelName: gpt-4o
+          Template: |-
+            You are a network security engineer AI. Analyze the following context and generate a firewall rule recommendation
+            compatible with the FirewallRulePatcher API schema.
+
+            Context:
+            {{contextData}}
+
+            Based on the context, return only this JSON structure:
+
+            {
+              "nsg_name": "<value from context or fallback>",
+              "rule_name": "<Access>_<source>_to_<destination>_<port>",
+              "direction": "<Inbound or Outbound>",
+              "access": "<Allow or Deny>",
+              "protocol": "<Tcp, Udp, or '*'>",
+              "source": "<source IP from context>",
+              "destination": "<destination IP from context>",
+              "port": "<destination port or port range from context>"
+            }
+
+            Guidance:
+            - Use the alert metadata to determine if the connection should be Allowed or Denied.
+            - Prefer Allow if source IP is classified as trusted_internal or behavior is benign and consistent.
+            - Use Deny if classification indicates threat, anomaly, or malicious behavior.
+            - Direction is typically Inbound if external IP is the source, Outbound if internal IP is the source.
+            - If nsg_name is not provided, use a placeholder like "unknown-nsg".
+            - Ensure rule_name follows this format: <Access>_<source>_to_<destination>_<port>
+
+            Do NOT include a "priority" field. The receiving plugin will assign it automatically.
+
+            Output only the JSON object. Do not include explanations, formatting, markdown, or extra text.
