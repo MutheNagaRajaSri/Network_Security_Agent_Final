@@ -2,9 +2,9 @@ openapi: 3.0.1
 info:
   title: IP Trust Classifier
   description: |
-    Classifies IP addresses using IPinfo.io and returns geographic, network, and privacy indicators.
-    #ExamplePrompts Classify the IP 192.168.1.5
-    #ExamplePrompts Is 8.8.8.8 a trusted IP?
+    Classifies IP addresses using GreyNoise and returns geographic, network, and classification indicators.
+    #ExamplePrompts: Classify the IP 192.168.1.5
+    #ExamplePrompts: Is 8.8.8.8 a trusted IP?
   version: "1.0.0"
 
 servers:
@@ -66,5 +66,12 @@ paths:
         '429':
           description: Rate limit exceeded
 
-components: {}
-security: []
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      name: key
+      in: header
+
+security:
+  - ApiKeyAuth: []
