@@ -1,0 +1,79 @@
+openapi: 3.0.1
+info:
+  title: IP Trust Classifier
+  description: Classifies IP addresses using IPinfo.io
+  version: "1.0.0"
+
+servers:
+  - url: https://ipinfo.io
+
+paths:
+  /{ipAddress}/json:
+    get:
+      operationId: IPTrustClassifier
+      summary: Classify an IP address using IPinfo
+      description: |
+        Looks up an IP address using IPinfo.io and returns data useful for determining trust level.
+        #ExamplePrompts Classify the IP 192.168.1.5
+        #ExamplePrompts Is 8.8.8.8 a trusted IP?
+      parameters:
+        - in: path
+          name: ipAddress
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: token
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: IP classification result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ip:
+                    type: string
+                  city:
+                    type: string
+                  region:
+                    type: string
+                  country:
+                    type: string
+                  loc:
+                    type: string
+                    description: "Latitude,Longitude"
+                  org:
+                    type: string
+                  postal:
+                    type: string
+                  timezone:
+                    type: string
+                  anycast:
+                    type: boolean
+                  privacy:
+                    type: object
+                    properties:
+                      vpn:
+                        type: boolean
+                      proxy:
+                        type: boolean
+                      tor:
+                        type: boolean
+                      hosting:
+                        type: boolean
+        '401':
+          description: Unauthorized or missing token
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: query
+      name: token
+
+security:
+  - ApiKeyAuth: []
