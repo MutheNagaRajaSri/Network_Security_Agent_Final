@@ -1,0 +1,70 @@
+openapi: 3.0.1
+info:
+  title: IP Trust Classifier
+  description: |
+    Classifies IP addresses using IPinfo.io and returns geographic, network, and privacy indicators.
+    #ExamplePrompts Classify the IP 192.168.1.5
+    #ExamplePrompts Is 8.8.8.8 a trusted IP?
+  version: "1.0.0"
+
+servers:
+  - url: https://api.greynoise.io
+
+paths:
+  /v3/community/{ip}:
+    get:
+      operationId: IPTrustClassifier
+      summary: Classify an IP address using GreyNoise
+      description: Retrieves IP metadata and classification (benign, malicious, unknown).
+      parameters:
+        - name: ip
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 8.8.8.8
+      responses:
+        '200':
+          description: IP classification result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ip:
+                    type: string
+                  classification:
+                    type: string
+                    enum: [benign, malicious, unknown]
+                  name:
+                    type: string
+                  actor:
+                    type: string
+                  tags:
+                    type: array
+                    items:
+                      type: string
+                  metadata:
+                    type: object
+                    properties:
+                      asn:
+                        type: string
+                      country:
+                        type: string
+                      city:
+                        type: string
+                      organization:
+                        type: string
+                      tor:
+                        type: boolean
+                      vpn:
+                        type: boolean
+                      rdns:
+                        type: string
+        '404':
+          description: IP not found
+        '429':
+          description: Rate limit exceeded
+
+components: {}
+security: []
