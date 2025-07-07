@@ -24,7 +24,7 @@ paths:
             type: string
             example: 8.8.8.8
         - name: token
-          in: query
+          in: Query
           required: true
           schema:
             type: string
