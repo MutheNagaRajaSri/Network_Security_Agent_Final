@@ -1,7 +1,10 @@
 openapi: 3.0.1
 info:
   title: IP Trust Classifier
-  description: Classifies IP addresses using IPinfo.io
+  description: |
+    Classifies IP addresses using IPinfo.io and returns geographic, network, and privacy indicators.
+    #ExamplePrompts Classify the IP 192.168.1.5
+    #ExamplePrompts Is 8.8.8.8 a trusted IP?
   version: "1.0.0"
 
 servers:
@@ -12,21 +15,20 @@ paths:
     get:
       operationId: IPTrustClassifier
       summary: Classify an IP address using IPinfo
-      description: |
-        Looks up an IP address using IPinfo.io and returns data useful for determining trust level.
-        #ExamplePrompts Classify the IP 192.168.1.5
-        #ExamplePrompts Is 8.8.8.8 a trusted IP?
+      description: Retrieves IP metadata including location, organization, and privacy attributes.
       parameters:
-        - in: path
-          name: ipAddress
+        - name: ipAddress
+          in: path
+          required: true
           schema:
             type: string
+            example: 8.8.8.8
+        - name: token
+          in: query
           required: true
-        - in: query
-          name: token
           schema:
             type: string
-          required: true
+            example: your_real_token_here
       responses:
         '200':
           description: IP classification result
@@ -36,6 +38,8 @@ paths:
                 type: object
                 properties:
                   ip:
+                    type: string
+                  hostname:
                     type: string
                   city:
                     type: string
@@ -66,7 +70,9 @@ paths:
                       hosting:
                         type: boolean
         '401':
-          description: Unauthorized or missing token
+          description: Unauthorized – missing or invalid token
+        '403':
+          description: Forbidden – rate-limited or denied access
 
 components:
   securitySchemes:
