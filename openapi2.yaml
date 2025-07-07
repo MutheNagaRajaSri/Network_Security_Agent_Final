@@ -23,12 +23,6 @@ paths:
           schema:
             type: string
             example: 8.8.8.8
-        - name: token
-          in: query
-          required: true
-          schema:
-            type: string
-            example: your_real_token_here
       responses:
         '200':
           description: IP classification result
@@ -78,8 +72,8 @@ components:
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
-      in: query
-      name: token
+      in: header          # ✅ must match your skill.yaml Location: Header
+      name: Key           # ✅ must match your skill.yaml Key: Key
 
 security:
   - ApiKeyAuth: []
