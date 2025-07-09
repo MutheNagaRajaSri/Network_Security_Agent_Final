@@ -12,7 +12,7 @@ servers:
 paths:
   /v3/community/{src_ip}:
     get:
-      operationId: IPTrustClassifier.classifySourceIP
+      operationId: classifySourceIP
       summary: Classify source IP address using GreyNoise
       description: |
         Classifies a source IP address using GreyNoise threat intelligence feed.
@@ -37,7 +37,7 @@ paths:
 
   /v3/community/{dest_ip}:
     get:
-      operationId: IPTrustClassifier.classifyDestinationIP
+      operationId: classifyDestinationIP
       summary: Classify destination IP address using GreyNoise
       description: |
         Classifies a destination IP address using GreyNoise threat intelligence feed.
