@@ -4,6 +4,7 @@ info:
   description: |
     Classifies source and destination IP addresses using GreyNoise threat intelligence feed.
     Returns geographic, behavioral, and trust classification data for each IP.
+    Supports classification for either `src_ip`, `dest_ip`, or both independently.
   version: "1.0.0"
 
 servers:
