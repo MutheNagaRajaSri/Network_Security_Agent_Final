@@ -8,7 +8,7 @@ servers:
   - url: https://api.greynoise.io
 
 paths:
-  /v3/community/{src_ip}:
+  /v3/community/{ip}:
     get:
       operationId: IPTrustClassifier
       summary: Classify a source IP address as trusted, suspicious, or malicious
@@ -17,7 +17,7 @@ paths:
         #ExamplePrompts Classify the IP 8.8.8.8
         #ExamplePrompts Is 1.1.1.1 suspicious?
       parameters:
-        - name: src_ip
+        - name: ip
           in: path
           required: true
           schema:
