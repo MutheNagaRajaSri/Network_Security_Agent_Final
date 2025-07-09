@@ -10,7 +10,7 @@ servers:
 paths:
   /v3/community/{ip}:
     get:
-      operationId: IPTrustClassifier
+      operationId: IPTrustClassifier.IPTrustClassifier
       summary: Classify a source IP address as trusted, suspicious, or malicious
       description: |
         Looks up a source IP address in the GreyNoise community feed to determine its trust level.
