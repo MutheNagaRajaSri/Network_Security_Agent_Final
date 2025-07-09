@@ -1,7 +1,9 @@
 Descriptor:
   Name: IPTrustClassifier
   DisplayName: IP Trust Classifier
-  Description: Classifies IPs using AbuseIPDB threat intelligence data
+  Description: This child skill is used by the agent skill `NetworkAlertAgent` to classify both source and 
+    destination IP addresses using GreyNoise for threat intelligence. It returns the threat status, geolocation, 
+    and additional context for each IP. This skill is not designed for direct user invocation.
   SupportedAuthTypes:
     - ApiKey
   Authorization:
@@ -13,4 +15,4 @@ Descriptor:
 SkillGroups:
   - Format: API
     Settings:
-      OpenApiSpecUrl: https://raw.githubusercontent.com/MNRajasri/SecurityAgentTesting/main/openapi.yaml
+      OpenApiSpecUrl: https://raw.githubusercontent.com/MutheNagaRajaSri/Network_Security_Agent_Final/main/openapi4.yaml
