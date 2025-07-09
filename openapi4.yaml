@@ -1,9 +1,7 @@
 openapi: 3.0.1
 info:
   title: IP Trust Classifier
-  description: |
-    Classifies source and destination IP addresses using GreyNoise threat intelligence feed.
-    Returns geographic, behavioral, and trust classification data for each IP.
+  description: Classifies source IP addresses using GreyNoise threat intelligence feed
   version: "1.0.0"
 
 servers:
@@ -12,11 +10,12 @@ servers:
 paths:
   /v3/community/{src_ip}:
     get:
-      operationId: classifySourceIP
-      summary: Classify source IP address using GreyNoise
+      operationId: IPTrustClassifier
+      summary: Classify a source IP address as trusted, suspicious, or malicious
       description: |
-        Classifies a source IP address using GreyNoise threat intelligence feed.
-        #ExamplePrompts: Classify source IP 8.8.8.8
+        Looks up a source IP address in the GreyNoise community feed to determine its trust level.
+        #ExamplePrompts Classify the IP 8.8.8.8
+        #ExamplePrompts Is 1.1.1.1 suspicious?
       parameters:
         - name: src_ip
           in: path
@@ -25,36 +24,21 @@ paths:
             type: string
       responses:
         '200':
-          description: Source IP classification result
+          description: IP classification result from GreyNoise
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IPClassification'
-        '400':
-          description: Invalid IP format
-        '401':
-          description: Unauthorized or missing API key
-
-  /v3/community/{dest_ip}:
-    get:
-      operationId: classifyDestinationIP
-      summary: Classify destination IP address using GreyNoise
-      description: |
-        Classifies a destination IP address using GreyNoise threat intelligence feed.
-        #ExamplePrompts: Classify destination IP 1.1.1.1
-      parameters:
-        - name: dest_ip
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Destination IP classification result
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/IPClassification'
+                type: object
+                properties:
+                  ip:
+                    type: string
+                  classification:
+                    type: string
+                    enum: [internal, partner, trusted, suspicious, malicious, unknown]
+                  threatScore:
+                    type: integer
+                  confidence:
+                    type: string
         '400':
           description: Invalid IP format
         '401':
@@ -66,20 +50,6 @@ components:
       type: apiKey
       in: header
       name: Key
-
-  schemas:
-    IPClassification:
-      type: object
-      properties:
-        ip:
-          type: string
-        classification:
-          type: string
-          enum: [internal, partner, trusted, suspicious, malicious, unknown]
-        threatScore:
-          type: integer
-        confidence:
-          type: string
 
 security:
   - ApiKeyAuth: []
