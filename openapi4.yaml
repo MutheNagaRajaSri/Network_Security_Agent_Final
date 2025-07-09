@@ -10,7 +10,7 @@ servers:
 paths:
   /v3/community/{ip}:
     get:
-      operationId: IPTrustClassifier
+      operationId: IPTrustClassifier.IPTrustClassifier
       summary: Classify an IP address
       description: Looks up an IP in GreyNoise to determine threat level.
       parameters:
