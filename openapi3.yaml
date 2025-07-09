@@ -10,7 +10,7 @@ servers:
   - url: https://api.greynoise.io
 
 paths:
-  /v3/community/source/{src_ip}:
+  /v3/community/{src_ip}:
     get:
       operationId: classifySourceIP
       summary: Classify source IP address using GreyNoise
@@ -35,7 +35,7 @@ paths:
         '401':
           description: Unauthorized or missing API key
 
-  /v3/community/destination/{dest_ip}:
+  /v3/community/{dest_ip}:
     get:
       operationId: classifyDestinationIP
       summary: Classify destination IP address using GreyNoise
