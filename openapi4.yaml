@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: IP Trust Classifier
-  description: Classifies source IP addresses using GreyNoise threat intelligence feed
+  description: Classifies IP addresses using GreyNoise threat intelligence feed
   version: "1.0.0"
 
 servers:
@@ -10,21 +10,19 @@ servers:
 paths:
   /v3/community/{ip}:
     get:
-      operationId: IPTrustClassifier.IPTrustClassifier
-      summary: Classify a source IP address as trusted, suspicious, or malicious
-      description: |
-        Looks up a source IP address in the GreyNoise community feed to determine its trust level.
-        #ExamplePrompts Classify the IP 8.8.8.8
-        #ExamplePrompts Is 1.1.1.1 suspicious?
+      operationId: IPTrustClassifier
+      summary: Classify an IP address
+      description: Looks up an IP in GreyNoise to determine threat level.
       parameters:
         - name: ip
           in: path
           required: true
           schema:
             type: string
+          x-ms-openai-param-location: path
       responses:
         '200':
-          description: IP classification result from GreyNoise
+          description: IP classification result
           content:
             application/json:
               schema:
@@ -40,9 +38,9 @@ paths:
                   confidence:
                     type: string
         '400':
-          description: Invalid IP format
+          description: Invalid IP
         '401':
-          description: Unauthorized or missing API key
+          description: Unauthorized
 
 components:
   securitySchemes:
