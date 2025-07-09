@@ -1,0 +1,80 @@
+openapi: 3.0.1
+info:
+  title: IP Trust Classifier
+  description: |
+    Classifies source and destination IP addresses using GreyNoise threat intelligence feed.
+    Returns geographic, behavioral, and trust classification data for each IP.
+    Supports single API call to classify both IPs together.
+  version: "1.0.0"
+
+servers:
+  - url: https://api.greynoise.io
+
+paths:
+  /v3/classify:
+    post:
+      operationId: classifyIPs
+      summary: Classify both source and destination IPs using GreyNoise
+      description: |
+        Classifies both source and destination IP addresses using GreyNoise threat intelligence feed.
+        #ExamplePrompts: Classify source IP 8.8.8.8 and destination IP 1.1.1.1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IPInput'
+      responses:
+        '200':
+          description: Trust classification results for both IPs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IPClassificationResult'
+        '400':
+          description: Invalid IP format
+        '401':
+          description: Unauthorized or missing API key
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Key
+
+  schemas:
+    IPInput:
+      type: object
+      properties:
+        src_ip:
+          type: string
+        dest_ip:
+          type: string
+      required:
+        - src_ip
+        - dest_ip
+
+    IPClassification:
+      type: object
+      properties:
+        ip:
+          type: string
+        classification:
+          type: string
+          enum: [internal, partner, trusted, suspicious, malicious, unknown]
+        threatScore:
+          type: integer
+        confidence:
+          type: string
+
+    IPClassificationResult:
+      type: object
+      properties:
+        src_result:
+          $ref: '#/components/schemas/IPClassification'
+        dest_result:
+          $ref: '#/components/schemas/IPClassification'
+
+security:
+  - ApiKeyAuth: []
