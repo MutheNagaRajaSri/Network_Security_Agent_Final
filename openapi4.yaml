@@ -3,25 +3,24 @@ info:
   title: IP Trust Classifier
   description: Classifies IP addresses using the GreyNoise Community API.
   version: "1.0.0"
- 
+
 servers:
-  - url: https://api.greynoise.io/v3/community
- 
+  - url: https://api.greynoise.io
+
 paths:
-  /check:
+  /v3/community/{ip}:
     get:
       operationId: IPTrustClassifier
-      summary: Classify an IP address as trusted, suspicious, or malicious
+      summary: Classify an IP address using GreyNoise
       description: |
-        Looks up an IP address in a threat intelligence database to determine its trust level.
-        #ExamplePrompts Classify the IP 192.168.1.5
-        #ExamplePrompts Is 8.8.8.8 a trusted IP?
+        Looks up an IP address in the GreyNoise Community API to determine its trust level.
       parameters:
-        - in: query
-          name: ipAddress
+        - name: ip
+          in: path
+          required: true
           schema:
             type: string
-          required: true
+          x-ms-openai-param-location: path
       responses:
         '200':
           description: IP classification result
@@ -34,22 +33,21 @@ paths:
                     type: string
                   classification:
                     type: string
-                    enum: [internal, partner, trusted, suspicious, malicious, unknown]
-                  threatScore:
-                    type: integer
-                  confidence:
+                  name:
+                    type: string
+                  link:
                     type: string
         '400':
-          description: Invalid IP format
+          description: Bad Request (Invalid IP)
         '401':
-          description: Unauthorized or missing API key
- 
+          description: Unauthorized
+
 components:
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
       in: header
-      name: Key
- 
+      name: key
+
 security:
   - ApiKeyAuth: []
