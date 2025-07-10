@@ -18,7 +18,7 @@ paths:
         #ExamplePrompts Is 8.8.8.8 a trusted IP?
       parameters:
         - in: query
-          name: ip
+          name: ipAddress
           schema:
             type: string
           required: true
