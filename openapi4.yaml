@@ -1,7 +1,11 @@
-openapi: 3.0.1
+openapi: 3.0.0
+
 info:
-  title: IP Trust Classifier
-  description: Classifies source IP addresses using GreyNoise threat intelligence feed
+  title: GreyNoise IP Trust Classifier
+  description: |
+    Classifies IP addresses using the GreyNoise Community API.
+    #ExamplePrompts Check trust of IP 8.8.8.8 using GreyNoise
+    #ExamplePrompts Use GreyNoise to determine IP reputation
   version: "1.0.0"
 
 servers:
@@ -11,20 +15,18 @@ paths:
   /v3/community/{ip}:
     get:
       operationId: IPTrustClassifier
-      summary: Classify a source IP address as trusted, suspicious, or malicious
       description: |
-        Looks up a source IP address in the GreyNoise community feed to determine its trust level.
-        #ExamplePrompts Classify the IP 8.8.8.8
-        #ExamplePrompts Is 1.1.1.1 suspicious?
+        Looks up an IP address in the GreyNoise Community API to determine its trust classification.
+      summary: Classifies an IP address as trusted, suspicious, or malicious using GreyNoise
       parameters:
-        - name: ip
-          in: path
-          required: true
+        - in: path
+          name: ip
           schema:
             type: string
+          required: true
       responses:
-        '200':
-          description: IP classification result from GreyNoise
+        200:
+          description: Successful IP classification
           content:
             application/json:
               schema:
@@ -32,24 +34,31 @@ paths:
                 properties:
                   ip:
                     type: string
+                    description: The IP address queried
                   classification:
                     type: string
-                    enum: [internal, partner, trusted, suspicious, malicious, unknown]
-                  threatScore:
-                    type: integer
-                  confidence:
+                    enum: [benign, unknown, malicious]
+                    description: GreyNoise classification of the IP
+                  name:
                     type: string
-        '400':
-          description: Invalid IP format
-        '401':
-          description: Unauthorized or missing API key
+                    description: Name associated with IP (if any)
+                  actor:
+                    type: string
+                    description: Actor associated with IP (if any)
+                  seen:
+                    type: boolean
+                    description: Whether the IP was seen in GreyNoise
+        400:
+          description: Invalid IP address
+        401:
+          description: Unauthorized - API key missing or invalid
 
 components:
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
       in: header
-      name: Key
+      name: key
 
 security:
   - ApiKeyAuth: []
